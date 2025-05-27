@@ -1,6 +1,6 @@
 {
   "name": "@coffeecircle/sanity-image-url",
-  "version": "1.1.0",
+  "version": "1.1.0-patch",
   "description": "Tools to generate image urls from Sanity content",
   "source": "src/builder.ts",
   "main": "lib/node/index.js",
