@@ -1,10 +1,10 @@
 {
-  "name": "@sanity/image-url",
+  "name": "@coffeecircle/sanity-image-url",
   "version": "1.1.0",
   "description": "Tools to generate image urls from Sanity content",
   "source": "src/builder.ts",
   "main": "lib/node/index.js",
-  "browser": "lib/browser/image-url.umd.js",
+  "browser": "lib/browser/image-url.esm.mjs",
   "umd:main": "lib/browser/image-url.umd.js",
   "typings": "lib/types/index.d.ts",
   "files": [

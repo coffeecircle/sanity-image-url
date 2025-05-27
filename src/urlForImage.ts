@@ -81,52 +81,21 @@ export default function urlForImage(options: ImageUrlBuilderOptions): string {
 // eslint-disable-next-line complexity
 function specToImageUrl(spec: ImageUrlBuilderOptionsWithAsset) {
   const cdnUrl = (spec.baseUrl || 'https://cdn.sanity.io').replace(/\/+$/, '')
-  const vanityStub = spec.vanityName ? `/${spec.vanityName}` : '' 
-  const filename = `${spec.asset.id}-${spec.asset.width}x${spec.asset.height}.${spec.asset.format}${vanityStub}`
-  const baseUrl = `${cdnUrl}/images/${spec.projectId}/${spec.dataset}/${filename}` 
+  const filename = `${spec.asset.id}-${spec.asset.width}x${spec.asset.height}.${spec.asset.format}`
+  const baseUrl = `${cdnUrl}/${spec.asset.id}/` 
 
   const params = []
 
-  if (spec.rect) {
-    // Only bother url with a crop if it actually crops anything
-    const {left, top, width, height} = spec.rect
-    const isEffectiveCrop =
-      left !== 0 || top !== 0 || height !== spec.asset.height || width !== spec.asset.width
-
-    if (isEffectiveCrop) {
-      params.push(`rect=${left},${top},${width},${height}`)
-    }
+  // TODO: map more options to Uploadcare syntax
+  if (spec.width && spec.height) {
+    params.push(`scale_crop/${spec.width * (spec.dpr || 1)}x${spec.height * (spec.dpr || 1)}/smart`)
   }
-
-  if (spec.bg) {
-    params.push(`bg=${spec.bg}`)
-  }
-
-  if (spec.focalPoint) {
-    params.push(`fp-x=${spec.focalPoint.x}`)
-    params.push(`fp-y=${spec.focalPoint.y}`)
-  }
-
-  const flip = [spec.flipHorizontal && 'h', spec.flipVertical && 'v'].filter(Boolean).join('')
-  if (flip) {
-    params.push(`flip=${flip}`)
-  }
-
-  // Map from spec name to url param name, and allow using the actual param name as an alternative
-  SPEC_NAME_TO_URL_NAME_MAPPINGS.forEach((mapping) => {
-    const [specName, param] = mapping
-    if (typeof spec[specName] !== 'undefined') {
-      params.push(`${param}=${encodeURIComponent(spec[specName])}`)
-    } else if (typeof spec[param] !== 'undefined') {
-      params.push(`${param}=${encodeURIComponent(spec[param])}`)
-    }
-  })
 
   if (params.length === 0) {
-    return baseUrl
+    return `${baseUrl}image-${filename}`
   }
 
-  return `${baseUrl}?${params.join('&')}`
+  return `${baseUrl}-/${params.join('/')}/image-${filename}`
 }
 
 function fit(

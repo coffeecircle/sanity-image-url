@@ -41,35 +41,10 @@ function rewriteSpecName(key: string) {
   return key
 }
 
-export default function urlBuilder(
-  options?: SanityClientLike | SanityProjectDetails | SanityModernClientLike
-) {
-  // Did we get a modernish client?
-  if (isSanityModernClientLike(options)) {
-    // Inherit config from client
-    const {apiHost: apiUrl, projectId, dataset} = options.config()
-    const apiHost = apiUrl || 'https://api.sanity.io'
-    return new ImageUrlBuilder(null, {
-      baseUrl: apiHost.replace(/^https:\/\/api\./, 'https://cdn.'),
-      projectId,
-      dataset,
-    })
-  }
-
-  // Did we get a SanityClient?
-  if (isSanityClientLike(options)) {
-    // Inherit config from client
-    const {apiHost: apiUrl, projectId, dataset} = options.clientConfig
-    const apiHost = apiUrl || 'https://api.sanity.io'
-    return new ImageUrlBuilder(null, {
-      baseUrl: apiHost.replace(/^https:\/\/api\./, 'https://cdn.'),
-      projectId,
-      dataset,
-    })
-  }
-
-  // Or just accept the options as given
-  return new ImageUrlBuilder(null, options || {})
+export default function urlBuilder() {
+  return new ImageUrlBuilder(null, {
+    baseUrl: 'https://cdn.coffeecircle.com',
+  })
 }
 
 export class ImageUrlBuilder {
